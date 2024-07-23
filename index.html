@@ -20,11 +20,12 @@
       await DLRExtension.load({license:"DLS2eyJoYW5kc2hha2VDb2RlIjoiMTAwMjI3NzYzLVRYbFhaV0pRY205cSIsIm1haW5TZXJ2ZXJVUkwiOiJodHRwczovL21sdHMuZHluYW1zb2Z0LmNvbSIsIm9yZ2FuaXphdGlvbklEIjoiMTAwMjI3NzYzIiwic3RhbmRieVNlcnZlclVSTCI6Imh0dHBzOi8vc2x0cy5keW5hbXNvZnQuY29tIiwiY2hlY2tDb2RlIjotMzg1NjA5MTcyfQ=="});
       await DLRExtension.init({styles:JSON.stringify(styles)});
       await DLRExtension.open();
-      await DLRExtension.setCallback(function(items){
-        let mrzString = DLRExtension.getMRZString(items);
-        alert(mrzString);
-        document.getElementById("results").innerText = mrzString;
+      await DLRExtension.setCallback(async function(items){
         DLRExtension.close();
+        let mrzString = await DLRExtension.getMRZString(items);
+        let parsedString = await DLRExtension.getParsedString(mrzString);
+        alert(parsedString);
+        document.getElementById("results").innerText = parsedString;
       });
       DLRExtension.startScanning();
     }

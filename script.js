@@ -7,6 +7,7 @@ let DLRExtension = {
   processing:undefined,
   textResults:undefined,
   callback:undefined,
+  parser:undefined,
   setCallback: function(callback){
     this.callback = callback;
   },
@@ -66,6 +67,26 @@ let DLRExtension = {
     }
     return str;
   },
+  getParsedResult: async function(mrzString){
+    let parsedResultItem = await this.parser.parse(mrzString);
+    return parsedResultItem;
+  },
+  getParsedString: async function(mrzString){
+    let str = "";
+    let parsedResultItem = await this.parser.parse(mrzString);
+    console.log(parsedResultItem);
+    let MRZFields = ["documentNumber","passportNumber","issuingState","name","sex","nationality","dateOfExpiry","dateOfBirth"];
+    for (let index = 0; index < MRZFields.length; index++) {
+      const field = MRZFields[index];
+      const value = parsedResultItem.getFieldValue(field);
+      console.log(field);
+      console.log(value);
+      if (value){
+        str = str + field + ": " + value + "\n";
+      }
+    }
+    return str;
+  },
   stopScanning: function(){
     if (this.interval) {
       clearInterval(this.interval);
@@ -74,6 +95,13 @@ let DLRExtension = {
     this.processing = false;
   },
   init: async function(pConfig){
+    await Dynamsoft.DCP.CodeParserModule.loadSpec("MRTD_TD1_ID");
+    await Dynamsoft.DCP.CodeParserModule.loadSpec("MRTD_TD2_FRENCH_ID");
+    await Dynamsoft.DCP.CodeParserModule.loadSpec("MRTD_TD2_ID");
+    await Dynamsoft.DCP.CodeParserModule.loadSpec("MRTD_TD2_VISA");
+    await Dynamsoft.DCP.CodeParserModule.loadSpec("MRTD_TD3_PASSPORT");
+    await Dynamsoft.DCP.CodeParserModule.loadSpec("MRTD_TD3_VISA");
+    this.parser = await Dynamsoft.DCP.CodeParser.createInstance();
     Dynamsoft.Core.CoreModule.loadWasm(["DLR"]);
     this.router = await Dynamsoft.CVR.CaptureVisionRouter.createInstance();
     await this.router.initSettings("{\"CaptureVisionTemplates\": [{\"Name\": \"mrz\",\"ImageROIProcessingNameArray\": [\"roi-mrz-passport\"]}],\"TargetROIDefOptions\": [{\"Name\": \"roi-mrz-passport\",\"TaskSettingNameArray\": [\"task-mrz-passport\"]}],\"TextLineSpecificationOptions\": [{\"Name\": \"tls-mrz-text\",\"CharacterModelName\": \"MRZ\",\"StringRegExPattern\": \"([ACI][A-Z<][A-Z<]{3}[A-Z0-9<]{9}[0-9][A-Z0-9<]{15}){(30)}|([0-9]{2}[(01-12)][(01-31)][0-9][MF<][0-9]{2}[(01-12)][(01-31)][0-9][A-Z<]{3}[A-Z0-9<]{11}[0-9]){(30)}|([A-Z<]{30}){(30)}|([ACIV][A-Z<][A-Z<]{3}[A-Z<]{31}){(36)}|([A-Z0-9<]{9}[0-9][A-Z<]{3}[0-9]{2}[(01-12)][(01-31)][0-9][MF<][0-9]{2}[(01-12)][(01-31)][0-9][A-Z0-9<]{8}){(36)}|([PV][A-Z<][A-Z<]{3}[A-Z<]{39}){(44)}|([A-Z0-9<]{9}[0-9][A-Z<]{3}[0-9]{2}[(01-12)][(01-31)][0-9][MF<][0-9]{2}[(01-12)][(01-31)][0-9][A-Z0-9<]{14}[A-Z0-9<]{2}){(44)}\",\"StringLengthRange\": [30,44],\"CharHeightRange\": [5,1000,1],\"BinarizationModes\": [{\"BlockSizeX\": 30,\"BlockSizeY\": 30,\"Mode\": \"BM_LOCAL_BLOCK\",\"MorphOperation\": \"Close\"}]},{\"Name\": \"tls-mrz-passport\",\"StringRegExPattern\": \"(P[A-Z<][A-Z<]{3}[A-Z<]{39}){(44)}|([A-Z0-9<]{9}[0-9][A-Z<]{3}[0-9]{2}[(01-12)][(01-31)][0-9][MF<][0-9]{2}[(01-12)][(01-31)][0-9][A-Z0-9<]{14}[0-9<][0-9]){(44)}\",\"StringLengthRange\": [44,44],\"BaseTextLineSpecificationName\": \"tls-mrz-text\"}],\"LabelRecognizerTaskSettingOptions\": [{\"Name\": \"mrz-text-task\",\"TextLineSpecificationNameArray\": [\"tls-mrz-text\"],\"SectionImageParameterArray\": [{\"Section\": \"ST_REGION_PREDETECTION\",\"ImageParameterName\": \"ip-mrz-text\"},{\"Section\": \"ST_TEXT_LINE_LOCALIZATION\",\"ImageParameterName\": \"ip-mrz-text\"},{\"Section\": \"ST_TEXT_LINE_RECOGNITION\",\"ImageParameterName\": \"ip-mrz-text\"}]},{\"Name\": \"task-mrz-passport\",\"TextLineSpecificationNameArray\": [\"tls-mrz-text\"],\"BaseLabelRecognizerTaskSettingName\": \"mrz-text-task\"}],\"CharacterModelOptions\": [{\"Name\": \"MRZ\"}],\"ImageParameterOptions\": [{\"Name\": \"ip-mrz-text\",\"TextureDetectionModes\": [{\"Mode\": \"TDM_GENERAL_WIDTH_CONCENTRATION\",\"Sensitivity\": 8}],\"TextDetectionMode\": {\"Mode\": \"TTDM_LINE\",\"CharHeightRange\": [20,1000,1],\"Sensitivity\": 7}}]}");
