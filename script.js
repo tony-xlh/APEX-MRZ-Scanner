@@ -44,7 +44,8 @@ let DLRExtension = {
           }
           if ('apex' in window) {
             if (pThis.item) {
-              apex.item(pThis.item).setValue(pThis.getMRZString(result.items));
+              let parsedString = await pThis.getParsedString(pThis.getMRZString(result.items));
+              apex.item(pThis.item).setValue(parsedString);
             }
             //if (pThis.ajax) {
             //  apex.server.process("SINGLE_BARCODE_SCANNED", {x01:results[0].barcodeText}, {dataType: "text", success: function(){}});
