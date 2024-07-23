@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Dynamsoft MRZ Scanner Sample</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=0" />
+    <style>
+    </style>
+    <script src="script.js"></script>
+    <style>
+      #results {
+        font-family: monospace;
+      }
+    </style>
+</head>
+<body>
+  <div id="results"></div>
+  <script>
+    window.onload = async function(){
+      let styles = {width:"100%",height:"100%",left:0,top:0,position:"absolute"}
+      await DLRExtension.load({license:"DLS2eyJoYW5kc2hha2VDb2RlIjoiMTAwMjI3NzYzLVRYbFhaV0pRY205cSIsIm1haW5TZXJ2ZXJVUkwiOiJodHRwczovL21sdHMuZHluYW1zb2Z0LmNvbSIsIm9yZ2FuaXphdGlvbklEIjoiMTAwMjI3NzYzIiwic3RhbmRieVNlcnZlclVSTCI6Imh0dHBzOi8vc2x0cy5keW5hbXNvZnQuY29tIiwiY2hlY2tDb2RlIjotMzg1NjA5MTcyfQ=="});
+      await DLRExtension.init({styles:JSON.stringify(styles)});
+      await DLRExtension.open();
+      await DLRExtension.setCallback(async function(items){
+        DLRExtension.close();
+        let mrzString = await DLRExtension.getMRZString(items);
+        let parsedString = await DLRExtension.getParsedString(mrzString);
+        alert(parsedString);
+        document.getElementById("results").innerText = parsedString;
+      });
+      DLRExtension.startScanning();
+    }
+  </script>
+</body>
+</html>
