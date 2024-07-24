@@ -118,6 +118,7 @@ let DLRExtension = {
     }
     let cameraView = await Dynamsoft.DCE.CameraView.createInstance();
     this.enhancer = await Dynamsoft.DCE.CameraEnhancer.createInstance(cameraView);
+    this.enhancer.setScanRegion({x:0,y:30,width:100,height:30,isMeasuredInPercentage:true})
     container.append(cameraView.getUIElement());
     if (pConfig.styles) {
       let styles = JSON.parse(pConfig.styles); //{width:"100%"} e.g.
