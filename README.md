@@ -1,6 +1,8 @@
 # APEX-MRZ-Scanner
 APEX Plug-in to scan MRZ on passports, ID cards, etc., using Dynamsoft Label Recognizer
 
+[Installation Guide](https://github.com/tony-xlh/APEX-MRZ-Scanner/issues/4)
+
 [Online demo](https://apex.oracle.com/pls/apex/r/dynamsoft/dynamsoft-demos/mrz-scanner?session=116381247959779)
 
 ![image](https://github.com/user-attachments/assets/2aabb640-c418-43d7-8978-d73e4d57a3ad)
