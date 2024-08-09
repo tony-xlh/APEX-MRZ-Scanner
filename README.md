@@ -9,7 +9,7 @@ Run the following code to start scanning:
 
 ```js
 (async () => {
-  if (DLRExtension.reader) {
+  if (DLRExtension.router) {
     await DLRExtension.open(); // open the camera
     DLRExtension.startScanning(); // start a loop to read MRZ from camera frames
   }else{
