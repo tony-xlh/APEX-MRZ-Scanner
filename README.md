@@ -36,7 +36,7 @@ DLRExtension.getResults();
 ## Attributes
 
 * styles. CSS styles for the container.
-* license. License for Dynamsoft Label Recognizer. You can apply your license [here](https://www.dynamsoft.com/customer/license/trialLicense?product=dlr).
+* license. License for Dynamsoft Label Recognizer. You can apply your license [here](https://www.dynamsoft.com/customer/license/trialLicense/?product=dcv&package=cross-platform).
 * MRZ result container. Specify the ID for the container of the parsed MRZ result.
 
 
